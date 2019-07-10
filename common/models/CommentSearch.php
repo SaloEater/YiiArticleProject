@@ -2,14 +2,14 @@
 
 namespace common\models;
 
+use common\models\Comment;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Article;
 
 /**
- * ArticleSearch represents the model behind the search form of `common\models\Article`.
+ * CommentSearch represents the model behind the search form of `common\models\Comment`.
  */
-class ArticleSearch extends Article
+class CommentSearch extends Comment
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class ArticleSearch extends Article
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'text', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'article_id'], 'integer'],
+            [['text'], 'safe'],
         ];
     }
 
@@ -38,9 +38,13 @@ class ArticleSearch extends Article
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, int $articleId = null)
     {
-        $query = Article::find();
+        if ($articleId) {
+            $query = Comment::find()->where(['article_id' => $articleId]);
+        } else {
+            $query = Comment::find();
+        }
 
         // add conditions that should always apply here
 
@@ -59,12 +63,14 @@ class ArticleSearch extends Article
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'article_id' => $this->article_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'text', $this->text]);
+        $query->andFilterWhere(['like', 'text', $this->text]);
 
         return $dataProvider;
     }

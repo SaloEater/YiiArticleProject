@@ -26,7 +26,7 @@ $counter = 0;
             [
                 'attribute' => 'Name',
                 'value' => function($data) {
-                    return Html::a($data->name, Url::to('/article/'.$data->id));
+                    return Html::a($data->name, Url::to('/article/'.($data->slug==''?$data->id:$data->slug)));
                 },
                 'format' => 'raw',
             ],
@@ -38,11 +38,14 @@ $counter = 0;
                     $w_length = count($words);
                     $length = 0;
                     $i = -1;
-                    while ( $length < 50 && $i++ < $w_length) {
+                    while ( $length < 50 && $i++ < $w_length && $i < count($words)) {
                         $length += strlen($words[$i]);
                         $result .= $words[$i] . ' ';
                     }
-                    return $result . " (...)";
+                    if ($i < count($words)) {
+                        $result .= " (...)";
+                    }
+                    return $result;
                 },
             ],
         ],

@@ -41,7 +41,9 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '<alias:\w+>' => 'site/<alias>',
-                'article/<id:\d+>' => 'article/view'
+                'article/<id:\d+>' => 'article/view',
+                'article/index' => 'article/index',
+                'article/<slug:[\w\-]+>' => 'article/viewslug'
             ],
         ],
 

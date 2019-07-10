@@ -2,15 +2,47 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use backend\assets\AppAsset;
 
-AppAsset::register($this);
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\ArticleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Articles';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerCss('table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+tbody td:nth-child(4) {
+    overflow: scroll;
+}
+
+tbody td:nth-child(3) {
+    overflow: hidden;
+}
+
+table td:nth-child(1),table th:nth-child(1){
+    width: 2.5%;
+}
+
+table td:nth-child(2),table th:nth-child(2) {
+    width: 10%;
+}
+
+table td:nth-child(3),table th:nth-child(3) {
+    width: 10%;
+}
+
+table td:nth-child(4),table th:nth-child(4) {
+    width: 70%;
+}
+
+table td:nth-child(5),table th:nth-child(5) {
+    width: 10%;
+}');
+
 ?>
 <div class="article-index">
 

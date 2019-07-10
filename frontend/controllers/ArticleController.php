@@ -6,6 +6,7 @@ namespace frontend\controllers;
 
 use common\models\Article;
 use common\models\ArticleSearch;
+use common\models\Comment;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -21,10 +22,9 @@ class ArticleController extends Controller
     {
         $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider
         ]);
     }
 
@@ -36,8 +36,33 @@ class ArticleController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        return $this->getCommonView($model);
+    }
+    /**
+     * Displays a single Article model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionViewslug($slug)
+    {
+        $model = $this->findModelBySlug($slug);
+        return $this->getCommonView($model);
+
+    }
+
+    private function getCommonView($model)
+    {
+        $comment = new Comment();
+
+        $comment->article_id = $model->id;
+        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+            $comment = new Comment();
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'comment' => $comment
         ]);
     }
 
@@ -51,6 +76,15 @@ class ArticleController extends Controller
     protected function findModel($id)
     {
         if (($model = Article::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findModelBySlug($slug)
+    {
+        if (($model = Article::findOne(['slug'=>$slug])) !== null) {
             return $model;
         }
 

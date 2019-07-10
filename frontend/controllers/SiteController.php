@@ -1,10 +1,12 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Comment;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -256,5 +258,16 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function actionDeletecomment($id)
+    {
+        $comment = Comment::findOne($id);
+        if ($comment && Yii::$app->user->id == $comment->created_by) {
+            $comment->delete();
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->redirect('/');
+        }
     }
 }
