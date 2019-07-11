@@ -6,6 +6,7 @@ use common\models\CommentSearch;
 use Yii;
 use common\models\Article;
 use common\models\ArticleSearch;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -22,10 +23,24 @@ class ArticleController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['post'],
                 ],
             ],
         ];
@@ -58,6 +73,7 @@ class ArticleController extends Controller
 
         $commentSearchModel = new CommentSearch();
         $commentDataProvider = $commentSearchModel->search(array_merge(Yii::$app->request->queryParams), $id);
+
         return $this->render('view', [
             'model' => $model,
             'commentDataProvider' => $commentDataProvider,
@@ -76,11 +92,8 @@ class ArticleController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
+                Yii::$app->session->setFlash('msg', 'Вы добавили статью');
                 return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                var_dump($model->getErrors());
-                echo '</pre>';
-                die();
             }
         }
 

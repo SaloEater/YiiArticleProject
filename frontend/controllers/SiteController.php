@@ -76,6 +76,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        Yii::$app->response->cookies->remove('visit');
         return $this->render('index');
     }
 
@@ -110,6 +111,8 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
+
+        Yii::$app->response->cookies->remove('visit');
 
         return $this->goHome();
     }

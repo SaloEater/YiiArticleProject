@@ -37,6 +37,10 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [];
+    $cookies = Yii::$app->response->cookies;
+    if ($cookies->has('visit')) {
+        $menuItems[] = ['label' => "You visit site " . $cookies->get('visit')->value . ' times', 'url'=>''];
+    }
     $menuItems[] = ['label' => 'Articles', 'url' => ['/article/index']];
     $menuItems[] = ['label' => 'Home', 'url' => ['/site/index']];
     $menuItems[] = ['label' => 'About', 'url' => ['/site/about']];

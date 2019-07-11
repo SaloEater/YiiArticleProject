@@ -9,10 +9,22 @@ use common\models\ArticleSearch;
 use common\models\Comment;
 use Yii;
 use yii\web\Controller;
+use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
 
 class ArticleController extends Controller
 {
+
+    private function incVisit()
+    {
+        $reqCookies = Yii::$app->request->cookies;
+        $visit=(int)$reqCookies->getValue('visit', 0);
+        $cookies = Yii::$app->response->cookies;
+        $cookies->add(new Cookie([
+            'name' => 'visit',
+            'value' => $visit+1
+        ]));
+    }
 
     /**
      * Lists all Article models.
@@ -20,6 +32,7 @@ class ArticleController extends Controller
      */
     public function actionIndex()
     {
+        $this->incVisit();
         $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
@@ -36,6 +49,7 @@ class ArticleController extends Controller
      */
     public function actionView($id)
     {
+        $this->incVisit();
         $model = $this->findModel($id);
         return $this->getCommonView($model);
     }
@@ -47,6 +61,7 @@ class ArticleController extends Controller
      */
     public function actionViewslug($slug)
     {
+        $this->incVisit();
         $model = $this->findModelBySlug($slug);
         return $this->getCommonView($model);
 
@@ -54,6 +69,7 @@ class ArticleController extends Controller
 
     private function getCommonView($model)
     {
+        $this->incVisit();
         $comment = new Comment();
 
         $comment->article_id = $model->id;
