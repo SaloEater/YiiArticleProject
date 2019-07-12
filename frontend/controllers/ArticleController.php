@@ -18,11 +18,10 @@ class ArticleController extends Controller
     private function incVisit()
     {
         $reqCookies = Yii::$app->request->cookies;
-        $visit=(int)$reqCookies->getValue('visit', 0);
         $cookies = Yii::$app->response->cookies;
         $cookies->add(new Cookie([
             'name' => 'visit',
-            'value' => $visit+1
+            'value' => (int)$reqCookies->getValue('visit', 0)+1
         ]));
     }
 
@@ -72,8 +71,10 @@ class ArticleController extends Controller
         $this->incVisit();
         $comment = new Comment();
 
-        $comment->article_id = $model->id;
-        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+        //$comment->article_id = $model->id;
+        $post = Yii::$app->request->post();
+
+        if ($comment->load($post) && $comment->save()) {
             $comment = new Comment();
         }
         return $this->render('view', [

@@ -7,10 +7,12 @@ use common\models\Comment;
 
 foreach ($comments as $com) {
     echo $this->render('\..\comment\_comment',
-        ['com'=>$com,
-            'isOwner' => $userId == $com->created_by ?? false]
+        [
+            'com'=>$com,
+            'isOwner' => $userId == $com->created_by ?? false,
+            'leftValue' => ($nestedLevel*15)
+        ]
     );
-    echo '<div style='.'padding-left:'.($nestedLevel*15)."px;";
     echo $this->render('\..\comment\section',
         [
             'userId'=>$userId,
@@ -18,5 +20,4 @@ foreach ($comments as $com) {
             'nestedLevel' => $nestedLevel>4?$nestedLevel:$nestedLevel+1
         ]
     );
-    echo "</div>";
 }

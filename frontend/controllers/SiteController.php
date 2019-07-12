@@ -6,7 +6,6 @@ use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
-use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -273,4 +272,18 @@ class SiteController extends Controller
             return $this->redirect('/');
         }
     }
+
+    public function actionEditcomment()
+    {
+        $post = Yii::$app->request->post();
+        if (isset($post['Comment']) && isset($post['Comment']['id'])) {
+            $comment = Comment::findOne($post['Comment']['id']);
+            $comment->load($post);
+            $comment->save();
+        }
+
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+
 }
