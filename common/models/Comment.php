@@ -16,9 +16,12 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updated_at
  * @property int $article_id
  * @property string $text
+ * @property int $parent_id
  *
  * @property Article $article
  * @property User $createdBy
+ * @property Comment $parent
+ * @property Comment[] $comments
  * @property User $updatedBy
  */
 class Comment extends \yii\db\ActiveRecord
@@ -27,12 +30,11 @@ class Comment extends \yii\db\ActiveRecord
     function behaviors()
     {
         return
-        [
-            TimestampBehavior::className(),
-            BlameableBehavior::className()
-        ];
+            [
+                TimestampBehavior::className(),
+                BlameableBehavior::className()
+            ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -47,10 +49,11 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_by', 'updated_by', 'created_at', 'updated_at', 'article_id'], 'integer'],
+            [['created_by', 'updated_by', 'created_at', 'updated_at', 'article_id', 'parent_id'], 'integer'],
             [['text'], 'string'],
             [['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Article::className(), 'targetAttribute' => ['article_id' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comment::className(), 'targetAttribute' => ['parent_id' => 'id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
         ];
     }
@@ -68,6 +71,7 @@ class Comment extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'article_id' => 'Article ID',
             'text' => 'Text',
+            'parent_id' => 'Parent ID',
         ];
     }
 
@@ -85,6 +89,22 @@ class Comment extends \yii\db\ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(User::className(), ['id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getParent()
+    {
+        return $this->hasOne(Comment::className(), ['id' => 'parent_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['parent_id' => 'id']);
     }
 
     /**

@@ -40,14 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $comment
     ]) ?>
     Комментарии пользователей
-    <?php
-    $currentUserId = Yii::$app->user->id;
-    foreach ($model->comments as $com) {
-        echo $this->render('\..\comment\_comment',
-            ['com'=>$com,
-                'isOwner' => $currentUserId == $com->created_by ?? false]
-        );
-    }
+    <?=
+    $this->render('\..\comment\section', [
+       'userId' => Yii::$app->user->id,
+       'comments' => \common\models\Comment::findAll([
+           'article_id' => $model->id,
+           'parent_id' => null
+       ]),
+        'nestedLevel' => 1
+    ]);
     ?>
 
 </div>

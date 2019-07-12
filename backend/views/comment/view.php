@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'article_id',
             'text:ntext',
+            'parent_id'
         ],
     ]) ?>
 

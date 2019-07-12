@@ -5,8 +5,10 @@ use yii\helpers\Html;
 
 /* @var $com common\models\Comment*/
 /* @var $isOwner boolean*/
+/* @var $paddingValue integer*/
 
-echo "<div style='width: 100%;padding: 5px; position:relative;'>";
+echo "<div style='width: 100%;padding: 5px; position:relative;padding-le'>";
+
 echo $com->createdBy->username;
 if ($isOwner) {
     $title = Yii::t('yii', 'Delete');
@@ -25,8 +27,8 @@ if ($isOwner) {
     echo Html::a($icon, ['/deletecomment', 'id' => $com->id], $options);
 }
 echo "<br/>";
-echo "<div style='border: width: 100%; border: 2px solid black; padding: 5px 5px 5px 15px; margin-left:10px;'>";
-echo $com->text;
+echo "<div style='width: 100%; border: 2px solid black; padding: 5px 5px 5px 15px;'>";
+    echo $com->text;
 echo "</div>";
 echo "</div>";
 echo "<br/>";
