@@ -88,6 +88,7 @@ class ArticleController extends Controller
      */
     public function actionCreate()
     {
+        die(print_r(Article::findOne(2)->getCreatedBy()));
         $model = new Article();
 
         if ($model->load(Yii::$app->request->post())) {
